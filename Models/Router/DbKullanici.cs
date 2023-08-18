@@ -13,18 +13,37 @@ namespace WebApplication1.Models.Router
     {
         static string hashstring = "slkjgdngı0243582ej";
     }
+    public class enkript
+    {
 
+    }
     public static class DbKullanici
     {
 
-
+        public static string hash = "slkjgdngı0243582ej";
+        public static string Encrypt(string sifre)
+        {
+            byte[] data = UTF8Encoding.UTF8.GetBytes(sifre);
+            using (MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider())
+            {
+                byte[] keys = md5.ComputeHash(UTF8Encoding.UTF8.GetBytes(hash));
+                using (TripleDESCryptoServiceProvider tripDes = new TripleDESCryptoServiceProvider() { Key = keys, Mode = CipherMode.ECB, Padding = PaddingMode.PKCS7 })
+                {
+                    ICryptoTransform transform = tripDes.CreateEncryptor();
+                    byte[] results = transform.TransformFinalBlock(data, 0, data.Length);
+                    return Convert.ToBase64String(results, 0, results.Length);
+                }
+            }
+        }
         public static Kullanici KullaniciBul(string kullaniciadi, string kullaniciparola)
         {
             using (KutuphaneEntities db = new KutuphaneEntities())
             {
+                string sifreliksifre;
+                sifreliksifre = Encrypt(kullaniciparola);
                 db.Configuration.ProxyCreationEnabled = false;
 
-                var kullanici = db.Kullanici.FirstOrDefault(x => x.KullaniciAdi == kullaniciadi && x.Parola == kullaniciparola);
+                var kullanici = db.Kullanici.FirstOrDefault(x => x.KullaniciAdi == kullaniciadi && x.Parola == sifreliksifre);
 
                 return kullanici;
             }

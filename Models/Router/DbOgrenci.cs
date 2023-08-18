@@ -36,7 +36,7 @@ namespace WebApplication1.Models.Router
                     ogrenci.Sinif = y.Sinif;
                     ogrenci.Bölüm = y.Bölüm;
                     ogrenci.OkulNo = y.OkulNo;
-                    
+
 
                     db.SaveChanges();
                     return false;
@@ -71,7 +71,7 @@ namespace WebApplication1.Models.Router
                     ID = x.ID,
                     AdiSoyadi = x.AdiSoyadi,
                     OkulNo = x.OkulNo
-                    
+
                 }).ToList();
                 return ogrenciler;
             }
@@ -124,7 +124,7 @@ namespace WebApplication1.Models.Router
                 }
             }
         }
-      
+
     }
 
     public class OgrenciViewModel

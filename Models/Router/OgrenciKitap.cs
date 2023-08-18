@@ -41,7 +41,7 @@ namespace WebApplication1.Models.Router
 
             }
         }
- 
+
         public static bool EkleDuzenle(KitapOgrenci k)
         {
             try
@@ -67,7 +67,7 @@ namespace WebApplication1.Models.Router
                         kitapogrenci.DegisiklikTarihi = DateTime.Now;
                         kitapogrenci.DegisiklikYapan = k.DegisiklikYapan;
                         kitapogrenci.KullanıcıID = k.KullanıcıID;
-                
+
                         kitapogrenci.TeslimDurumu = k.TeslimDurumu;
                         kitapogrenci.TeslimTarihi = k.TeslimTarihi;
 

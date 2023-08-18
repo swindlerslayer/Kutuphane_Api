@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using WebApplication1.Models.Data;
 using static WebApplication1.Models.Router.Degiskenler;
 
 namespace WebApplication1.Models.Router
-{
-    public class DbKitap
+{ 
+public class DbKitap
     {
+        public int Sayfadegeri { get; set; }
+
         public static List<EntityKitap> ListeyeEkle()
         {
             using (KutuphaneEntities db = new KutuphaneEntities())
@@ -18,12 +22,12 @@ namespace WebApplication1.Models.Router
                     Adi = x.Adi,
                     YazarID = x.YazarID,
                     YazarAdi = x.Yazar.AdiSoyadi,
-                    Resim = x.Resim
+                    Resim = x.Resim,
                 }).ToList();
                 return kitaplar;
             }
         }
-        public static Kitap EkleDuzenle(Kitap x)
+        public static bool EkleDuzenle(Kitap x)
         {
             using (KutuphaneEntities db = new KutuphaneEntities())
             {
@@ -47,7 +51,7 @@ namespace WebApplication1.Models.Router
                         Resim = x.Resim
                     });
                     db.SaveChanges();
-                    return x;
+                    return true;
                 }
                 else
                 {
@@ -58,14 +62,14 @@ namespace WebApplication1.Models.Router
                     kitap.DegisiklikTarihi = DateTime.Now;
                     kitap.DegisiklikYapan = x.DegisiklikYapan;
                     kitap.Barkod = x.Barkod;
-                    kitap.YazarID = x.YazarID; // Güncellenen YazarID
+                    kitap.YazarID = x.YazarID;
                     kitap.KitapTurID = x.KitapTurID;
-                    kitap.YayinEviID = x.YayinEviID; // Güncellenen YayinEviID
+                    kitap.YayinEviID = x.YayinEviID;
                     kitap.Resim = x.Resim;
 
 
                     db.SaveChanges();
-                    return x;
+                    return false;
                 }
             }
         }
@@ -124,7 +128,8 @@ namespace WebApplication1.Models.Router
             using (KutuphaneEntities db = new KutuphaneEntities())
             {
                 var kitapkontrol = db.KitapOgrenci.FirstOrDefault(x => x.KitapID == y);
-                if(kitapkontrol == null) { 
+                if (kitapkontrol == null)
+                {
                     db.Configuration.ProxyCreationEnabled = false;
                     var customer = db.Kitap.First(c => c.ID == y);
                     db.Kitap.Remove(customer);
@@ -140,12 +145,34 @@ namespace WebApplication1.Models.Router
 
             }
         }
+        public static object KitapFiltreArama(int AranacakDeger)
+        {
+            SqlConnection OleCn = new SqlConnection(@"Data Source=BERKANT\SQL2016;Initial Catalog=Kutuphane;Persist Security Info=True;User ID=sa;Password=1;MultipleActiveResultSets=True;Application Name=EntityFramework");
+            var Sayfadegeri = 15;
+
+            OleCn.Open();
+            var kalinanyer = AranacakDeger * Sayfadegeri;
+
+            SqlCommand Cmd = new SqlCommand();
+            Cmd.Connection = OleCn;
+            Cmd.CommandText = ($"SELECT * FROM Kitap ORDER BY ID OFFSET {kalinanyer} ROWS FETCH NEXT 15 ROWS ONLY;");
+            SqlDataAdapter Da = new SqlDataAdapter();
+
+            Da.SelectCommand = Cmd;
+            Cmd.ExecuteNonQuery();
+            DataTable Ds = new DataTable();
+            Da.Fill(Ds);
+       
+
+
+            return new { Data = Ds, PageCount = AranacakDeger +1 };
+        }
+
         public static Kitap KitapGetir(int id)
         {
             using (KutuphaneEntities db = new KutuphaneEntities())
             {
                 db.Configuration.ProxyCreationEnabled = false;
-
                 var data = db.Kitap.FirstOrDefault(x => x.ID == id);
                 if (data != null)
                 {
@@ -153,9 +180,27 @@ namespace WebApplication1.Models.Router
                 }
                 else
                 {
+
                     return null;
                 }
             }
+        }
+    }
+}
+public class KitapPagination
+{
+    const int maxPageSize = 50;
+    public int PageNumber { get; set; } = 1;
+    private int _pageSize = 10;
+    public int PageSize
+    {
+        get
+        {
+            return _pageSize;
+        }
+        set
+        {
+            _pageSize = (value > maxPageSize) ? maxPageSize : value;
         }
     }
 }

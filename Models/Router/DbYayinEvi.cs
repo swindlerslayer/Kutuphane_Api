@@ -87,13 +87,15 @@ namespace WebApplication1.Models.Router
                 {
                     var yayinevi = db.YayinEvi.FirstOrDefault(x => x.Adi == y.Adi);
                     // y.KayitTarihi = DateTime.Now;
-                    if(yayinevi != null) {
+                    if (yayinevi != null)
+                    {
                         return false;
                     }
-                    else { 
-                    db.YayinEvi.Add(y);
-                    db.SaveChanges();
-                    return true;
+                    else
+                    {
+                        db.YayinEvi.Add(y);
+                        db.SaveChanges();
+                        return true;
                     }
                 }
                 else

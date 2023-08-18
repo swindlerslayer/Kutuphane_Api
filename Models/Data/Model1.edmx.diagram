@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="0da0115800154df7908f50364a27d8ef" Name="Diagram1">
+      <Diagram DiagramId="378587d103e944f39e887df9b5aad850" Name="Diagram1">
         <EntityTypeShape EntityType="KutuphaneModel.Kitap" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="KutuphaneModel.KitapOgrenci" Width="1.5" PointX="5.25" PointY="1.375" IsExpanded="true" />
         <EntityTypeShape EntityType="KutuphaneModel.KitapTuru" Width="1.5" PointX="0.75" PointY="1.875" IsExpanded="true" />

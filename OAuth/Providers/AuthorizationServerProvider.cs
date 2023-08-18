@@ -50,30 +50,38 @@ namespace WebApiBearerTokenApp.OAuth
 
             //validation işlemlerini ve kontrollerini bu kısımda yapıyoruz , örnek olması için sabit değerler verildi ,
             //bu kısmı db den okuyacak şekilde bir yapı kurgulanabilir.
-                                    
-            
+
+
             // Kullanıcı adı ve şifre bilgilerini kontrol etmek için bir veritabanı sorgusu yapılması gerekmektedir.
             // Bu örnekte Entity Framework kullanarak bir veritabanı bağlantısı yapıldığını varsayalım.
             using (var dbContext = new KutuphaneEntities())
             {
-                var user = dbContext.Kullanici.FirstOrDefault(u => u.KullaniciAdi == Kadi && u.Parola == Ksifre);
-                if (user != null)
+                try
                 {
-                    // Eğer kullanıcı doğrulandıysa ClaimsIdentity (Kimlik oluşturuyoruz)
-                    var identity = new ClaimsIdentity(context.Options.AuthenticationType);
-                    identity.AddClaim(new Claim("sub", context.UserName));// Identity özelliklerini ekliyoruz.
-                    identity.AddClaim(new Claim("role", "user"));
+                    var user = dbContext.Kullanici.FirstOrDefault(u => u.KullaniciAdi == Kadi && u.Parola == SifreliKsifre);
+                    if (user != null)
+                    {
+                        // Eğer kullanıcı doğrulandıysa ClaimsIdentity (Kimlik oluşturuyoruz)
+                        var identity = new ClaimsIdentity(context.Options.AuthenticationType);
+                        identity.AddClaim(new Claim("sub", context.UserName));// Identity özelliklerini ekliyoruz.
+                        identity.AddClaim(new Claim("role", "user"));
 
-                    context.Validated(identity);// Doğrulanmış olan kimliği context'e ekliyoruz.
+                        context.Validated(identity);// Doğrulanmış olan kimliği context'e ekliyoruz.
+                    }
+                    else
+                    {
+                        // Eğer hata var ise bir hata mesajı gönderiyoruz. 
+                        context.SetError("Oturum Hatası", "Kullanıcı adı ve şifre hatalıdır");
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    // Eğer hata var ise bir hata mesajı gönderiyoruz. 
-                    context.SetError("Oturum Hatası", "Kullanıcı adı ve şifre hatalıdır");
+
                 }
+
             }
 
-          
+
         }
     }
 }

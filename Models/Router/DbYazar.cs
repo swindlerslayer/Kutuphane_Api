@@ -15,6 +15,16 @@ namespace WebApplication1.Models.Router
 {
     public class DbYazar
     {
+        public static object TumYazarGetir()
+        {
+            using (KutuphaneEntities db = new KutuphaneEntities())
+            {
+                db.Configuration.ProxyCreationEnabled = false;
+
+                var yazarlar = db.Yazar.ToList();
+                return yazarlar;
+            }
+        }
 
         public static bool EkleDuzenle(Yazar y)
         {
@@ -40,6 +50,7 @@ namespace WebApplication1.Models.Router
             }
         }
 
+
         public static object ListeyeEklee()
         {
             using (KutuphaneEntities db = new KutuphaneEntities())
@@ -52,7 +63,7 @@ namespace WebApplication1.Models.Router
                 }).ToList();
                 return yazarlar;
             }
-        }     
+        }
 
         public static bool sil(int y)
         {
@@ -72,14 +83,14 @@ namespace WebApplication1.Models.Router
                     }
                     else
                     {
-                        
-                       
+
+
                         var silinecekyazar = db.Yazar.FirstOrDefault(x => x.AdiSoyadi == yazarbulma.AdiSoyadi);
                         db.Yazar.Remove(silinecekyazar);
                         db.SaveChanges();
                         return true;
-                        
-                    
+
+
                     }
                 }
             }
@@ -89,7 +100,7 @@ namespace WebApplication1.Models.Router
         {
             using (KutuphaneEntities db = new KutuphaneEntities())
             {
-      
+
 
                 var yazar = db.Kitap.FirstOrDefault(x => x.YazarID == id.ID);
                 if (yazar != null)

@@ -57,7 +57,7 @@ namespace WebApplication1.Models.Router
                 }
             }
         }
-    
+
         public static object ListeyeEklee()
         {
             using (KutuphaneEntities db = new KutuphaneEntities())

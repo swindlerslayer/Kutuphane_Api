@@ -32,6 +32,23 @@ namespace WebApplication1.Controllers
             }
 
         }
+        [System.Web.Http.HttpGet]
+
+        [Route("api/tumyazargetir")]
+
+        public IHttpActionResult TumYazarGetir()
+        {
+            var kaydedildi = DbYazar.TumYazarGetir();
+            if (kaydedildi != null)
+            {
+                return Ok(kaydedildi);
+            }
+            else
+            {
+                return ResponseMessage(Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "error"));
+            }
+
+        }
 
 
         [System.Web.Http.HttpGet]

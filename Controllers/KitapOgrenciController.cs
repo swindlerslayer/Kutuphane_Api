@@ -20,10 +20,6 @@ namespace WebApplication1.Controllers
         KutuphaneEntities db = new KutuphaneEntities();
 
 
-     
-
-
-
         [System.Web.Http.HttpPost]
         [Route("api/kitapogrenciekleduzenle")]
         public IHttpActionResult ekleduzenle([FromBody] KitapOgrenci request)
@@ -98,7 +94,7 @@ namespace WebApplication1.Controllers
         }
 
 
-       
+
 
         [System.Web.Http.HttpGet]
         [Route("api/kitapogrencisil")]

@@ -35,8 +35,8 @@ namespace WebApplication1.Controllers
 
         [Route("api/Register")]
 
-       
-      
+
+
         public IHttpActionResult Register([FromBody] Kullanici request)
         {
             string Kadi, Ksifre, SifreliKsifre;
@@ -67,7 +67,7 @@ namespace WebApplication1.Controllers
                     return ResponseMessage(Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Kayıt Başarısız"));
                 }
             }
-          
+
         }
 
     }

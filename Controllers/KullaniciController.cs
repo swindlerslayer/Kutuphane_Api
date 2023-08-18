@@ -10,10 +10,10 @@ using WebApplication1.Models.Data;
 
 namespace WebApplication1.Controllers
 {
-
     public class KullaniciController : ApiController
     {
         string hash = "slkjgdngı0243582ej";
+
         public string Decrypt(string SifrelenmisDeger)
         {
             byte[] data = Convert.FromBase64String(SifrelenmisDeger);
@@ -45,12 +45,13 @@ namespace WebApplication1.Controllers
         [Route("api/kullanici/kullaniciKontrol")]
         [HttpGet]
         [Authorize]
+
         public IHttpActionResult KullaniciKontrol(string kullaniciAdi, string parola)
-        {         
-                
+        {
+
             try
             {
-               // var ss = Encrypt(password);
+                //var ss = Encrypt(password);
                 var res = DbKullanici.KullaniciGirisKontrol(kullaniciAdi, parola);
 
                 if (res = true)
@@ -71,13 +72,15 @@ namespace WebApplication1.Controllers
 
         [Route("api/kullanici/kullaniciBul")]
         [HttpGet]
+        [Authorize]
+
         public IHttpActionResult KullaniciBul(string kullaniciAdi, string parola)
         {
 
             try
             {
                 // var ss = Encrypt(password);
-            
+
                 var res = DbKullanici.KullaniciBul(kullaniciAdi, parola);
 
                 if (res != null)

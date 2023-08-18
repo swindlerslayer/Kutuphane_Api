@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -17,21 +20,14 @@ namespace WebApplication1.Controllers
     {
         KutuphaneEntities db = new KutuphaneEntities();
 
-
-
         [System.Web.Http.HttpGet]
 
-        [Route("api/resimsil")]
-        //parametre olarak id'si verilen kitabın resim verisini siler
-
-        
+        [System.Web.Http.Route("api/resimsil")]
         public IHttpActionResult resimsil(int id)
         {
             Kitap selectedKitap = new Kitap();
             selectedKitap.ID = id;
 
-           //NŞA'da alttaki kaydedildi verisini bool olarak kullanıyordum ancak 
-           //uygulama tarafındaki post/get metodları bool döndürdüğümde hata veridiği için veriye çevirdim
             Kitap kaydedildi = DbKitap.resimsil(selectedKitap);
             if (kaydedildi != null)
             {
@@ -46,28 +42,21 @@ namespace WebApplication1.Controllers
 
         [System.Web.Http.HttpGet]
 
-        [Route("api/kitapsil")]
+        [System.Web.Http.Route("api/kitapsil")]
         //parametre olarak id'si verilen kitabı siler
         public IHttpActionResult KitapSil(int ID)
         {
             var kaydedildi = DbKitap.sil(ID);
             return Ok(kaydedildi);
-            //if (kaydedildi == true)
-            //{
-            //    return Ok(true);
-            //}
-            //else
-            //{
-            //    return ResponseMessage(Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Message describing the error here"));
-            //}
+
         }
 
 
 
         [System.Web.Http.HttpPost]
 
-        [Route("api/ekleduzenle")]
-        public IHttpActionResult ekleduzenle([FromBody] Kitap request)
+        [System.Web.Http.Route("api/ekleduzenle")]
+        public IHttpActionResult ekleduzenle([System.Web.Http.FromBody] Kitap request)
         {
             //ekleduzenle route'de json olarak aldığım verileri request olarak
             //DbKitap içerisindeki EkleDuzenle isimli metoda iletiyor
@@ -84,7 +73,7 @@ namespace WebApplication1.Controllers
 
         [System.Web.Http.HttpGet]
 
-        [Route("api/kitapgetir")]
+        [System.Web.Http.Route("api/kitapgetir")]
 
         public IHttpActionResult TumKitapGetir(int ID)
         {
@@ -103,7 +92,33 @@ namespace WebApplication1.Controllers
 
         [System.Web.Http.HttpGet]
 
-        [Route("api/kitaplisteyeekle")]
+        [System.Web.Http.Route("api/kitapgetirfiltre")]
+
+
+        public IHttpActionResult KitapFiltreGetir(int id)
+        {
+
+
+            var kaydedildi = DbKitap.KitapFiltreArama(id);
+            if (kaydedildi != null)
+            {
+                return Ok(kaydedildi);
+            }
+            else
+            {
+                return ResponseMessage(Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "error"));
+            }
+           // SELECT* FROM table_name LIMIT 10 OFFSET 40
+
+
+
+
+        }
+
+
+        [System.Web.Http.HttpGet]
+
+        [System.Web.Http.Route("api/kitaplisteyeekle")]
 
         public IHttpActionResult KitapListeyeEkle()
         {
@@ -122,7 +137,7 @@ namespace WebApplication1.Controllers
 
         [System.Web.Http.HttpGet]
 
-        [Route("api/kitaplistele")]
+        [System.Web.Http.Route("api/kitaplistele")]
 
         public IHttpActionResult KitapListele(int ID)
         {
