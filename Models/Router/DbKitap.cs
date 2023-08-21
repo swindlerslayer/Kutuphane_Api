@@ -145,9 +145,9 @@ public class DbKitap
 
             }
         }
-        public static object KitapFiltreArama(int AranacakDeger)
+        public static object KitapSayfaArama(int AranacakDeger)
         {
-            SqlConnection OleCn = new SqlConnection(@"Data Source=BERKANT\SQL2016;Initial Catalog=Kutuphane;Persist Security Info=True;User ID=sa;Password=1;MultipleActiveResultSets=True;Application Name=EntityFramework");
+            SqlConnection OleCn = new SqlConnection(SQLKOMUTLAR.sqlconnectionstring());
             var Sayfadegeri = 15;
 
             OleCn.Open();
@@ -155,7 +155,7 @@ public class DbKitap
 
             SqlCommand Cmd = new SqlCommand();
             Cmd.Connection = OleCn;
-            Cmd.CommandText = ($"SELECT * FROM Kitap ORDER BY ID OFFSET {kalinanyer} ROWS FETCH NEXT 15 ROWS ONLY;");
+            Cmd.CommandText = SQLKOMUTLAR.paginationsql(kalinanyer);
             SqlDataAdapter Da = new SqlDataAdapter();
 
             Da.SelectCommand = Cmd;
@@ -166,6 +166,27 @@ public class DbKitap
 
 
             return new { Data = Ds, PageCount = AranacakDeger +1 };
+        }
+
+        public static object KitapFiltreArama(string AranacakDeger)
+        {
+            SqlConnection OleCn = new SqlConnection(SQLKOMUTLAR.sqlconnectionstring());
+
+            OleCn.Open();
+
+            SqlCommand Cmd = new SqlCommand();
+            Cmd.Connection = OleCn;
+            Cmd.CommandText = SQLKOMUTLAR.filteringsql(AranacakDeger);
+            SqlDataAdapter Da = new SqlDataAdapter();
+
+            Da.SelectCommand = Cmd;
+            Cmd.ExecuteNonQuery();
+            DataTable Ds = new DataTable();
+            Da.Fill(Ds);
+
+
+
+            return Ds;
         }
 
         public static Kitap KitapGetir(int id)
@@ -187,20 +208,22 @@ public class DbKitap
         }
     }
 }
-public class KitapPagination
+public class SQLKOMUTLAR
 {
-    const int maxPageSize = 50;
-    public int PageNumber { get; set; } = 1;
-    private int _pageSize = 10;
-    public int PageSize
+
+    internal static string sqlconnectionstring()
     {
-        get
-        {
-            return _pageSize;
-        }
-        set
-        {
-            _pageSize = (value > maxPageSize) ? maxPageSize : value;
-        }
+        return @"Data Source=BERKANT\SQL2016;Initial Catalog=Kutuphane;Persist Security Info=True;User ID=sa;Password=1;MultipleActiveResultSets=True;Application Name=EntityFramework";
     }
+    internal static string paginationsql(int aranacakDeger)
+    {
+        return $"SELECT K1.ID ,K1.Adi,K1.SayfaSayisi,K1.KitapTurID,K1.YayinEviID,K1.YazarID,K1.Barkod,K1.KayitYapan,K1.KayitTarihi,K1.DegisiklikYapan,K1.DegisiklikTarihi,K1.Resim,K2.AdiSoyadi, K3.Adi,k4.Adi FROM(SELECT * FROM Kitap ORDER BY ID OFFSET {aranacakDeger} ROWS FETCH NEXT 15 ROWS ONLY) AS K1 JOIN Yazar AS K2  ON K1.YazarID = K2.ID JOIN YayinEvi AS K3 ON K1.YayinEviID = K3.ID JOIN KitapTuru AS K4 ON k1.KitapTurID = k4.ID; ";
+    }
+
+    internal static string filteringsql(string aranacakDeger)
+    {
+        return $"SELECT k1.ID, k1.Adi,k1.SayfaSayisi,k1.KitapTurID,k1.YayinEviID,k1.YazarID,k1.Barkod,k1.KayitYapan,k1.KayitTarihi,k1.DegisiklikYapan,k1.DegisiklikTarihi,k1.Resim FROM Kitap AS K1 JOIN Yazar AS K2  ON K1.YazarID = K2.ID JOIN YayinEvi AS K3 ON K1.YayinEviID = K3.ID JOIN KitapTuru AS K4 ON k1.KitapTurID = k4.ID WHERE '{aranacakDeger}' IN (k1.Adi, K2.AdiSoyadi, k3.Adi); ";
+    }
+
+
 }

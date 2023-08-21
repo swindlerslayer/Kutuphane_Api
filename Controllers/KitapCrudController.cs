@@ -92,14 +92,12 @@ namespace WebApplication1.Controllers
 
         [System.Web.Http.HttpGet]
 
-        [System.Web.Http.Route("api/kitapgetirfiltre")]
+        [System.Web.Http.Route("api/kitapgetirsayfa")]
 
 
-        public IHttpActionResult KitapFiltreGetir(int id)
+        public IHttpActionResult KitapSayfaGetir(int id)
         {
-
-
-            var kaydedildi = DbKitap.KitapFiltreArama(id);
+            var kaydedildi = DbKitap.KitapSayfaArama(id);
             if (kaydedildi != null)
             {
                 return Ok(kaydedildi);
@@ -108,12 +106,26 @@ namespace WebApplication1.Controllers
             {
                 return ResponseMessage(Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "error"));
             }
-           // SELECT* FROM table_name LIMIT 10 OFFSET 40
-
-
-
-
         }
+
+        [System.Web.Http.HttpGet]
+
+        [System.Web.Http.Route("api/kitapgetirfiltre")]
+
+
+        public IHttpActionResult KitapGetirFiltre(string querry)
+        {
+            var kaydedildi = DbKitap.KitapFiltreArama(querry);
+            if (kaydedildi != null)
+            {
+                return Ok(kaydedildi);
+            }
+            else
+            {
+                return ResponseMessage(Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "error"));
+            }
+        }
+
 
 
         [System.Web.Http.HttpGet]
